@@ -31,6 +31,7 @@ namespace BulkyWeb.Controllers
             {
                 ModelState.AddModelError("", "The Name cannot be 'name'");
             }
+            TempData["success"] = "Category Created Successfully.";
 
             if (ModelState.IsValid)
             {
@@ -41,6 +42,7 @@ namespace BulkyWeb.Controllers
             return View();
 		}
 
+        //Edit Method
         public IActionResult Edit(int? id)
         {
             if (id == null || id == 0)
@@ -66,6 +68,7 @@ namespace BulkyWeb.Controllers
 			{
 				ModelState.AddModelError("", "The Name cannot be 'name'");
 			}
+			TempData["success"] = "Category Edited Successfully.";
 
 			if (ModelState.IsValid)
 			{
@@ -75,5 +78,37 @@ namespace BulkyWeb.Controllers
 			}
 			return View();
 		}
-	}
+
+        //Delete Method
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Category? categoryById = _db.Categories.Find(id);
+
+            if (categoryById == null)
+            {
+                return NotFound();
+            }
+            return View(categoryById);
+        }
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeletePOST(int? id)
+        {
+            Category? categoryById = _db.Categories.Find(id);
+
+            if(categoryById == null)
+            {
+                return NotFound();
+            }
+			TempData["success"] = "Category Deleted Successfully.";
+
+			_db.Categories.Remove(categoryById);
+            _db.SaveChanges();
+            return RedirectToAction("Index", "Category");
+            
+        }
+    }
 }

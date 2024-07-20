@@ -1,4 +1,5 @@
 ﻿@model List<Product>
+
 <div class=" ="container>
 	<div class="row pt-4 pb-3">
 		<div class="col-6">
@@ -21,9 +22,9 @@
 		<th>
 			Title
 		</th>
-		<th>
+		@* <th>
 			Description
-		</th>
+		</th> *@
 		<th>
 			ISBN
 		</th>
@@ -33,7 +34,7 @@
 		<th>
 			List Price
 		</th>
-		<th>
+		@* <th>
 			Price(1-50)
 		</th>
 		<th>
@@ -41,6 +42,9 @@
 		</th>
 		<th>
 			Price(100+)
+		</th> *@
+		<th>
+			Category
 		</th>
 		<th></th>
 	</tr>
@@ -50,13 +54,14 @@
 		{
 			<tr>
 				<td>@obj.Title</td>
-				<td>@obj.Description</td>
+				@* <td>@obj.Description</td> *@
 				<td>@obj.ISBN</td>
 				<td>@obj.Author</td>
 				<td>@obj.ListPrice</td>
-				<td>@obj.Price</td>
+				<td></td>
+				@* <td>@obj.Price</td>
 				<td>@obj.Price50</td>
-				<td>@obj.Price100</td>
+				<td>@obj.Price100</td> *@
 				<td>
 					<div class="w-75 btn-group" role="group">
 						<a asp-controller="Product" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">

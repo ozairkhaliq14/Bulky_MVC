@@ -1,9 +1,9 @@
-using BulkyWebRazor_temp.Data;
-using BulkyWebRazor_temp.Models;
+using BulkyBookWebRazor_temp.Data;
+using BulkyBookWebRazor_temp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace BulkyWebRazor_temp.Pages.Categories
+namespace BulkyBookWebRazor_temp.Pages.Categories
 {
     public class EditModel : PageModel
     {

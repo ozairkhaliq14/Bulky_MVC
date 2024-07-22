@@ -51,7 +51,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            Category? categoryById = _unitOfWork.Category.Get(u => u.Id == id);
+            Category? categoryById = _unitOfWork.Category.Get(u => u.Id == id );
 
             if (categoryById == null)
             {

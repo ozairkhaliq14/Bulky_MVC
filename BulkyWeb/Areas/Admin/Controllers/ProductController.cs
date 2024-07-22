@@ -25,7 +25,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties : "Category").ToList();
             
             return View(objProductList);
         }
@@ -64,16 +64,37 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 {
                     string filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     string productPath = Path.Combine(wwwRootPath, @"images\product\");
-                    
-                    using (FileStream fileStream = new FileStream(Path.Combine(productPath, filename), FileMode.Create))
+
+					if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+					{
+						Console.WriteLine(productVM.Product.ImageUrl);
+						var oldImageUrlPath = Path.Combine(wwwRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+
+						if (System.IO.File.Exists(oldImageUrlPath))
+						{
+							System.IO.File.Delete(oldImageUrlPath);
+						}
+					}
+
+					using (FileStream fileStream = new FileStream(Path.Combine(productPath, filename), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
                     productVM.Product.ImageUrl = @"images\product\" + filename;
                 }
 
-				_unitOfWork.Product.Add(productVM.Product);
-                _unitOfWork.Save();
+                
+
+                if(productVM.Product.Id == 0)
+                {
+					_unitOfWork.Product.Add(productVM.Product);
+				}
+                else
+                {
+					_unitOfWork.Product.Update(productVM.Product);
+				}
+
+				_unitOfWork.Save();
 				TempData["success"] = "Product Created Successfully.";
 				return RedirectToAction("Index", "Product");
             }
@@ -121,5 +142,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return RedirectToAction("Index", "Product");
 
         }
+
+        #region API CALLS
+
+        public IActionResult GetAll()
+        {
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return Json(new {data = objProductList});
+        }
+        #endregion
     }
 }

@@ -1,8 +1,12 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
+using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Security;
 
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
@@ -11,65 +15,80 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
         {
             List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
+            
             return View(objProductList);
         }
 
-        public IActionResult Create()
+        //Update and Insert method
+        public IActionResult Upsert(int? id)
         {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Create(Product obj)
-        {
-            TempData["success"] = "Product Created Successfully.";
-            if (ModelState.IsValid)
+            ProductVM productVM = new()
             {
-                _unitOfWork.Product.Add(obj);
-                _unitOfWork.Save();
-                return RedirectToAction("Index", "Product");
-            }
-            return View();
-        }
-
-        //Edit Method
-        public IActionResult Edit(int? id)
-        {
+                CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                Product = new Product()
+            };
             if (id == null || id == 0)
             {
-                return NotFound();
-            }
-            Product? productById = _unitOfWork.Product.Get(u => u.Id == id);
-
-            if (productById == null)
+				return View(productVM);
+			}
+            else
             {
-                return NotFound();
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id == id);
+                return View(productVM);
             }
-            return View(productById);
-        }
-        [HttpPost]
-        public IActionResult Edit(Product obj)
-        {
-            
-            TempData["success"] = "Product Edited Successfully.";
+		}
 
+        [HttpPost]
+        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
+        {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Product.Update(obj);
+				string wwwRootPath = _webHostEnvironment.WebRootPath;
+                
+                if(file != null)
+                {
+                    string filename = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images\product\");
+                    
+                    using (FileStream fileStream = new FileStream(Path.Combine(productPath, filename), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    productVM.Product.ImageUrl = @"images\product\" + filename;
+                }
+
+				_unitOfWork.Product.Add(productVM.Product);
                 _unitOfWork.Save();
-                return RedirectToAction("Index", "Product");
+				TempData["success"] = "Product Created Successfully.";
+				return RedirectToAction("Index", "Product");
             }
-            return View();
-        }
+            else
+            {
+                productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
+				return View(productVM);
+			}
+		}
+
+        
 
         //Delete Method
         public IActionResult Delete(int? id)

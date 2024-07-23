@@ -109,40 +109,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 			}
 		}
 
-        
-
-        //Delete Method
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Product? productById = _unitOfWork.Product.Get(u => u.Id == id);
-
-            if (productById == null)
-            {
-                return NotFound();
-            }
-            return View(productById);
-        }
-        [HttpPost, ActionName("Delete")]
-        public IActionResult DeletePOST(int? id)
-        {
-            Product? productById = _unitOfWork.Product.Get(u => u.Id == id);
-
-            if (productById == null)
-            {
-                return NotFound();
-            }
-            TempData["success"] = "Product Deleted Successfully.";
-
-            _unitOfWork.Product.Remove(productById);
-            _unitOfWork.Save();
-            return RedirectToAction("Index", "Product");
-
-        }
-
         #region API CALLS
 
         public IActionResult GetAll()
@@ -150,6 +116,29 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
             return Json(new {data = objProductList});
         }
-        #endregion
-    }
+
+        [HttpDelete]
+		public IActionResult Delete(int? id)
+		{
+            var productToBeDeleted = _unitOfWork.Product.Get(u => u.Id == id);
+
+            if(productToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error white deleting" });
+            }
+			var oldImageUrlPath = Path.Combine(_webHostEnvironment.WebRootPath, 
+                                    productToBeDeleted.ImageUrl.TrimStart('\\'));
+
+			if (System.IO.File.Exists(oldImageUrlPath))
+			{
+				System.IO.File.Delete(oldImageUrlPath);
+			}
+
+            _unitOfWork.Product.Remove(productToBeDeleted);
+            _unitOfWork.Save();
+
+			return Json(new { success = true, message = "Delete Successful" });
+		}
+		#endregion
+	}
 }

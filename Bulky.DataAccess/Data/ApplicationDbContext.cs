@@ -14,6 +14,8 @@ namespace BulkyBookWeb.DataAccess.Data
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet <ApplicationUser> applicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -111,6 +113,51 @@ namespace BulkyBookWeb.DataAccess.Data
 					CategoryId = 3,
 					ImageUrl = ""
 				}
+                );
+
+            modelBuilder.Entity<Company>().HasData(
+                new Company
+                {
+                    Id = 1,
+                    Name = "Fake Company",
+                    StreetAddress = "123 New Street",
+                    City = "Chicago",
+                    State = "Illinois",
+                    PostalCode = "60606",
+                    PhoneNumber = "1231231231"
+                },
+                new Company
+                {
+                    Id = 2,
+                    Name = "Fake Company 2",
+                    StreetAddress = "1243 New Street",
+                    City = "Chicago",
+                    State = "Illinois",
+                    PostalCode = "60606",
+                    PhoneNumber = "1234231231"
+                },
+                new Company
+                {
+                    Id = 3,
+                    Name = "Fake Company 3",
+                    StreetAddress = "12322 New Street",
+                    City = "Chicago",
+                    State = "Illinois",
+                    PostalCode = "60606",
+                    PhoneNumber = "12314231231"
+                },
+                new Company
+                {
+                    Id = 41,
+                    Name = "Fake Company 4",
+                    StreetAddress = "12d3 New Street",
+                    City = "Chicago",
+                    State = "Illinois",
+                    PostalCode = "60606",
+                    PhoneNumber = "115231231"
+                }
+
+
                 );
         }
 

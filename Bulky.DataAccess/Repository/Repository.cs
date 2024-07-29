@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBookWeb.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BulkyBook.DataAccess.Repository
 {
@@ -26,25 +27,39 @@ namespace BulkyBook.DataAccess.Repository
 			dbSet.Add(entity);
 		}
 
-		public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+		public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked = false)
 		{
-			IQueryable<T> query = dbSet;
-			if (!string.IsNullOrEmpty(includeProperties))
+			IQueryable<T> query;
+            if (tracked)
 			{
-				foreach (var includeProp in includeProperties
-					.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-				{
-					query = query.Include(includeProp);
-				}
-			}
-			query = query.Where(filter);
-			return query.FirstOrDefault();
-		}
+				query = dbSet;
+            }
+            else
+			{
+				query = dbSet.AsNoTracking();	                
+            }
 
-		public IEnumerable<T> GetAll(string? includeProperties = null)
+            query = query.Where(filter);
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var includeProp in includeProperties
+                    .Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+            return query.FirstOrDefault();
+
+        }
+
+		public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null)
 		{
 			IQueryable<T> query = dbSet;
-			if (!string.IsNullOrEmpty(includeProperties))
+			if(filter != null)
+			{
+                query = query.Where(filter);
+            }
+            if (!string.IsNullOrEmpty(includeProperties))
 			{
 				foreach (var includeProp in includeProperties
 					.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))

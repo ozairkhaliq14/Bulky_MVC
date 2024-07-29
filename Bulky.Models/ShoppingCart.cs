@@ -17,5 +17,8 @@ namespace BulkyBook.Models
         public Product Product { get; set; }
         public int Count { get; set; }
         public string ApplicationUserId { get; set; }
+
+        [NotMapped]
+        public double Price { get; set; }
     }
 }

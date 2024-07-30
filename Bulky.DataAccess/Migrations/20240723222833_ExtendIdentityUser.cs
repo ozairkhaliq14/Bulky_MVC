@@ -73,7 +73,7 @@ namespace BulkyBook.DataAccess.Migrations
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "StreeAddress",
+                name: "StreetAddress",
                 table: "AspNetUsers");
         }
     }

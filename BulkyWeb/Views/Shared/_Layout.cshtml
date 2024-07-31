@@ -30,6 +30,9 @@
                         <li class="nav-item">
                             <a class="nav-link " asp-area="Customer" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link " asp-area="Admin" asp-controller="Order" asp-action="Index">Manage Order</a>
+                        </li>
                         @* @if (User.IsInRole(SD.Role_Admin)) *@
                         @* { *@
                             <li class="nav-item dropdown">
@@ -46,9 +49,7 @@
                                     <li class="nav-item">
                                         <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
                                     </li>
-                                <li class="nav-item">
-                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Order" asp-action="Index">Order Management</a>
-                                </li>
+                                
                                     <li><hr class="dropdown-divider"></li>
                                 </ul>
                             </li>

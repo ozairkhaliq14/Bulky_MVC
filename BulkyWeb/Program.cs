@@ -50,7 +50,7 @@ namespace BulkyBookWeb
                 option.AppSecret = "2defa76c666b6ffe1988850d96abbe8c";
             });
 
-            builder.Services.AddScoped<IDbInitiliazer, DbInitiliazer>();
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddRazorPages();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -83,8 +83,8 @@ namespace BulkyBookWeb
             {
                 using(var scope = app.Services.CreateScope())
                 {
-                   var dbInitializer =  scope.ServiceProvider.GetRequiredService<IDbInitiliazer>();
-                    dbInitializer.Initiliaze();
+                   var dbInitializer =  scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                    dbInitializer.Initialize();
                 }
             }
         }

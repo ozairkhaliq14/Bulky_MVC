@@ -69,11 +69,11 @@ namespace BulkyBook.DataAccess.DbInitializer
                     EmailConfirmed = true
                 }, "Admin123!").GetAwaiter().GetResult();
 
-                ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@dotnetmastery.com");
+                ApplicationUser user = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@bulky.com");
                 _userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
 
             }
-            _userManager.CreateAsync(new ApplicationUser
+            /*_userManager.CreateAsync(new ApplicationUser
             {
                 UserName = "admin2@bulky.com",
                 Email = "admin2@bulky.com",
@@ -87,7 +87,7 @@ namespace BulkyBook.DataAccess.DbInitializer
             }, "Admin123!").GetAwaiter().GetResult();
 
             ApplicationUser userTwo = _db.ApplicationUsers.FirstOrDefault(u => u.Email == "admin@dotnetmastery.com");
-            _userManager.AddToRoleAsync(userTwo, SD.Role_Admin).GetAwaiter().GetResult();
+            _userManager.AddToRoleAsync(userTwo, SD.Role_Admin).GetAwaiter().GetResult();*/
 
             return;
         }

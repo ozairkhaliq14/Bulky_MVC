@@ -22,7 +22,6 @@ namespace BulkyBookWeb
             builder.Services.AddDbContext<ApplicationDbContext>
                 (options => {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
             builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
